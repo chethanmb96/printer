@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HP Smart Tank 589 | Printer Status & Monitor</title>
+  <meta name="description" content="Real-time dashboard and telemetry monitor for HP Smart Tank 589 All-in-One printer. View ink levels, counters, network health, and diagnostic tools.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top App Navigation -->
+  <header class="navbar" id="mainHeader">
+    <div class="nav-left">
+      <div class="brand-container">
+        <div class="brand-logo">
+          <img src="images/hp_smart_tank_589_pure.png" alt="HP Smart Tank 589" class="brand-printer-thumb">
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">HP Smart Tank 589</span>
+          <span class="brand-subtitle">Telemetry & Control Dashboard</span>
+        </div>
+      </div>
+      <div class="connection-badge" id="connStatusBadge">
+        <span class="status-pulse-dot" id="connPulse"></span>
+        <span class="status-text" id="connStatusText">Connecting...</span>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <div class="auto-refresh-control" title="Auto Refresh Rate">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <select id="refreshRateSelect" aria-label="Auto refresh interval">
+          <option value="5">Every 5s</option>
+          <option value="10" selected>Every 10s</option>
+          <option value="30">Every 30s</option>
+          <option value="0">Manual only</option>
+        </select>
+      </div>
+
+      <button class="btn btn-secondary icon-btn" id="refreshBtn" title="Refresh Live Data">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" class="spin-icon">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+        </svg>
+        <span>Refresh</span>
+      </button>
+
+      <button class="btn btn-secondary icon-btn" id="settingsBtn" title="Connection Settings">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+
+      <button class="btn btn-secondary icon-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode">
+        <svg id="themeIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+
+    <!-- Top Alert Banner (if any) -->
+    <div id="noticeBanner" class="notice-banner hidden">
+      <div class="notice-content">
+        <span class="notice-icon">ℹ️</span>
+        <span id="noticeText">Operating in demonstration mode.</span>
+      </div>
+      <button class="notice-close" id="noticeCloseBtn">&times;</button>
+    </div>
+
+    <!-- Section: Hero Card -->
+    <section class="hero-card" id="heroCard">
+      <div class="hero-left">
+        <div class="printer-avatar">
+          <div class="avatar-glow"></div>
+          <img src="images/hp_smart_tank_589_pure.png" alt="HP Smart Tank 589 All-in-One Printer" class="real-printer-photo" id="heroPrinterImg" title="Official HP Smart Tank 589 Product Photography">
+        </div>
+
+        <div class="hero-details">
+          <div class="hero-title-row">
+            <h1 class="hero-title" id="printerModelName">HP Smart Tank 589</h1>
+            <span class="status-tag" id="printerStatePill">
+              <span class="status-tag-dot"></span>
+              <span id="printerStateText">Ready</span>
+            </span>
+          </div>
+          <p class="hero-subtitle">Wireless All-in-One Ink Tank Printer with Flatbed Scanner & Copier</p>
+
+          <div class="meta-chips-row">
+            <div class="meta-chip">
+              <span class="meta-label">Serial Number</span>
+              <span class="meta-val mono" id="deviceSerial">TH67T7W31V</span>
+            </div>
+            <div class="meta-chip">
+              <span class="meta-label">Firmware</span>
+              <span class="meta-val mono" id="deviceFirmware">LWP1CN2630CR</span>
+            </div>
+            <div class="meta-chip">
+              <span class="meta-label">Uptime</span>
+              <span class="meta-val" id="deviceUptime">--</span>
+            </div>
+            <div class="meta-chip">
+              <span class="meta-label">Installed On</span>
+              <span class="meta-val" id="deviceInstallDate">10/8/2026</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <div class="action-btn-group">
+          <button class="btn btn-primary" id="openEwsBtn" title="Open HP Embedded Web Server in your browser">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            <span>Open HP Web Admin</span>
+          </button>
+          
+          <button class="btn btn-secondary" id="openQueueBtn" title="Open Windows Print Queue Spooler">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <path d="M6 14h12v8H6z"/>
+            </svg>
+            <span>Print Spooler</span>
+          </button>
+
+          <button class="btn btn-outline" id="printTestPageBtn" title="Print Windows Test Page">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            <span>Test Page</span>
+          </button>
+        </div>
+
+        <div class="hero-live-footnote">
+          <span class="footnote-dot"></span>
+          <span id="lastUpdatedFootnote">Synced with printer at 192.168.29.86</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Smart Tank Ink Reservoir Visualizer -->
+    <section class="section-container" id="inkSection">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <div class="section-icon ink-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="section-title">Smart Tank Ink Reservoirs</h2>
+            <p class="section-desc">Transparent front ink tank levels with continuous refill system</p>
+          </div>
+        </div>
+        <div class="tank-summary-badge" id="tankSummaryBadge" title="Combined liquid volume across all 4 tanks">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
+          <span class="tank-summary-vol" id="tankSummaryVol">345 / 345 ml</span>
+          <span class="tank-summary-pct" id="tankSummaryPct">(100% Fluid Capacity)</span>
+        </div>
+        <div class="tank-legend">
+          <span class="legend-item"><span class="legend-color black-dot"></span> GT53 / GT53XL Black (135 ml)</span>
+          <span class="legend-item"><span class="legend-color cyan-dot"></span> GT52 Cyan (70 ml)</span>
+          <span class="legend-item"><span class="legend-color magenta-dot"></span> GT52 Magenta (70 ml)</span>
+          <span class="legend-item"><span class="legend-color yellow-dot"></span> GT52 Yellow (70 ml)</span>
+        </div>
+      </div>
+
+      <!-- The 4 Physical Tanks Grid -->
+      <div class="tanks-grid" id="tanksContainer">
+        <!-- Rendered dynamically by JavaScript -->
+        <div class="tank-card-skeleton">Loading ink tanks...</div>
+      </div>
+
+      <!-- Printhead Health & Specs row -->
+      <div class="printhead-banner" id="printheadBanner">
+        <div class="printhead-header">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+          </svg>
+          <span>Dual Thermal Inkjet Printhead Health</span>
+        </div>
+        <div class="printhead-cards" id="printheadCards">
+          <!-- Populated dynamically -->
+          <div class="printhead-item">
+            <div class="ph-info">
+              <span class="ph-name">Black Printhead (HP X4E75A / 3YP61A)</span>
+              <span class="ph-serial">Serial: 184b23c911a0</span>
+            </div>
+            <span class="badge badge-success">Operational / OK</span>
+          </div>
+          <div class="printhead-item">
+            <div class="ph-info">
+              <span class="ph-name">Tri-Color Printhead (HP M0H50A)</span>
+              <span class="ph-serial">Serial: 1757b52971c3</span>
+            </div>
+            <span class="badge badge-success">Operational / OK</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two-Column Grid: Counters & Hardware Stats -->
+    <div class="two-col-grid">
+
+      <!-- Column 1: Print & Copy Lifetime Usage -->
+      <section class="card section-card" id="countersSection">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon blue-icon">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+            </div>
+            <h3 class="card-title">Lifetime Page Impressions</h3>
+          </div>
+          <span class="card-badge" id="impressionsTotalBadge">56 Total</span>
+        </div>
+
+        <div class="counters-overview">
+          <div class="metric-box">
+            <span class="metric-label">Total Impressions</span>
+            <span class="metric-value" id="cntTotal">56</span>
+            <span class="metric-sub">Lifetime prints & copies</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Monochrome Pages</span>
+            <span class="metric-value mono-val" id="cntMono">18</span>
+            <span class="metric-sub" id="cntMonoPct">32% of total</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Color Pages</span>
+            <span class="metric-value color-val" id="cntColor">34</span>
+            <span class="metric-sub" id="cntColorPct">68% of total</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Copy Jobs</span>
+            <span class="metric-value copy-val" id="cntCopy">6</span>
+            <span class="metric-sub">Flatbed copy impressions</span>
+          </div>
+        </div>
+
+        <!-- Comparative Distribution Bar -->
+        <div class="distribution-wrap">
+          <div class="distribution-labels">
+            <span>Monochrome (18)</span>
+            <span>Color (34)</span>
+          </div>
+          <div class="distribution-bar">
+            <div class="dist-seg dist-mono" id="distMonoBar" style="width: 32%;"></div>
+            <div class="dist-seg dist-color" id="distColorBar" style="width: 68%;"></div>
+          </div>
+        </div>
+
+        <div class="spooler-queue-box">
+          <div class="spooler-info">
+            <span class="spooler-label">Active Spooler Queue:</span>
+            <span class="spooler-val" id="spoolerJobsCount">0 print jobs waiting</span>
+          </div>
+          <span class="spooler-status" id="spoolerStatusLabel">Spooler Idle</span>
+        </div>
+      </section>
+
+      <!-- Column 2: Media Tray & Flatbed Scanner -->
+      <section class="card section-card" id="hardwareSection">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon amber-icon">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+            </div>
+            <h3 class="card-title">Paper Handling & Scanner</h3>
+          </div>
+          <span class="card-badge" id="hardwareStateBadge">Ready</span>
+        </div>
+
+        <div class="hardware-grid">
+          <!-- Paper Input Tray -->
+          <div class="hw-item">
+            <div class="hw-icon-wrap">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
+            <div class="hw-details">
+              <span class="hw-title">Rear Input Tray</span>
+              <span class="hw-meta" id="paperSize">A4 (210 x 297 mm)</span>
+              <span class="hw-sub" id="paperType">Plain Paper (Stationery)</span>
+              <div class="hw-spec">Up to 100 sheets input capacity</div>
+            </div>
+            <span class="badge badge-success" id="paperStatusBadge">Loaded</span>
+          </div>
+
+          <!-- Flatbed Scanner -->
+          <div class="hw-item">
+            <div class="hw-icon-wrap">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M7 12h10M7 8h10M7 16h6"/>
+              </svg>
+            </div>
+            <div class="hw-details">
+              <span class="hw-title">Flatbed CIS Scanner</span>
+              <span class="hw-meta" id="scannerState">Engine State: Idle</span>
+              <span class="hw-sub">Optical Resolution: Up to 1200 DPI</span>
+              <div class="hw-spec">eSCL 2.63 & WSD-Scan Enabled</div>
+            </div>
+            <span class="badge badge-success" id="scannerStatusBadge">Idle / Ready</span>
+          </div>
+
+          <!-- Output Bin -->
+          <div class="hw-item">
+            <div class="hw-icon-wrap">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+              </svg>
+            </div>
+            <div class="hw-details">
+              <span class="hw-title">Output Bin</span>
+              <span class="hw-meta">Delivery: Face-Up</span>
+              <span class="hw-sub">30-Sheet output tray with foldout extender</span>
+            </div>
+            <span class="badge badge-neutral">Clear</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Section: Network & Wi-Fi Health -->
+    <section class="card section-card" id="networkSection">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon emerald-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+              <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+              <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+              <line x1="12" y1="20" x2="12.01" y2="20"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Network & Wireless Connectivity</h3>
+        </div>
+        <div class="wifi-strength-indicator">
+          <span class="wifi-bar b1 active"></span>
+          <span class="wifi-bar b2 active"></span>
+          <span class="wifi-bar b3 active"></span>
+          <span class="wifi-bar b4 active"></span>
+          <span class="wifi-text" id="wifiSsid">JioFiber-2.4GHz</span>
+        </div>
+      </div>
+
+      <div class="network-details-grid">
+        <div class="net-stat-card">
+          <span class="net-stat-label">IPv4 Address</span>
+          <span class="net-stat-val mono" id="netIpv4">192.168.29.86</span>
+          <span class="net-stat-tag">Local Subnet</span>
+        </div>
+
+        <div class="net-stat-card">
+          <span class="net-stat-label">Wi-Fi Band & Mode</span>
+          <span class="net-stat-val" id="netBand">2.4 GHz (802.11 b/g/n)</span>
+          <span class="net-stat-tag">Self-Healing Wi-Fi</span>
+        </div>
+
+        <div class="net-stat-card">
+          <span class="net-stat-label">Hardware MAC</span>
+          <span class="net-stat-val mono" id="netMac">74:DA:78:BC:BE:8E</span>
+          <span class="net-stat-tag">HP Inc.</span>
+        </div>
+
+        <div class="net-stat-card">
+          <span class="net-stat-label">Security & Auth</span>
+          <span class="net-stat-val" id="netAuth">WPA2-Personal (AES)</span>
+          <span class="net-stat-tag">Secure Wi-Fi</span>
+        </div>
+
+        <div class="net-stat-card">
+          <span class="net-stat-label">Packets Transmitted</span>
+          <span class="net-stat-val mono" id="netPacketsTx">19,351 pkts</span>
+          <span class="net-stat-tag">Tx OK</span>
+        </div>
+
+        <div class="net-stat-card">
+          <span class="net-stat-label">Packets Received</span>
+          <span class="net-stat-val mono" id="netPacketsRx">18,186 pkts</span>
+          <span class="net-stat-tag" id="netUniMultiTag">13,180 Uni / 5,006 Multi</span>
+        </div>
+
+        <div class="net-stat-card">
+          <span class="net-stat-label">Bonjour / mDNS Name</span>
+          <span class="net-stat-val mono text-xs" id="netMdns">HP Smart Tank 580-590 series [BCBE8E]</span>
+          <span class="net-stat-tag">ZeroConf</span>
+        </div>
+
+        <div class="net-stat-card">
+          <span class="net-stat-label">Device UUID</span>
+          <span class="net-stat-val mono text-xs" id="netUuid">urn:uuid:c5c3dc33-e7c5-41ae-a5bc-4e0cfcf44fdc</span>
+          <span class="net-stat-tag">Hardware ID</span>
+        </div>
+
+        <div class="net-stat-card">
+          <span class="net-stat-label">Link Quality & RF</span>
+          <span class="net-stat-val mono" id="netBytesRx">70,236 bytes</span>
+          <span class="net-stat-tag badge-green">0 Collisions / 0 Errors</span>
+        </div>
+      </div>
+
+      <div class="network-protocols-row">
+        <span class="protocol-chip">✓ AirPrint</span>
+        <span class="protocol-chip">✓ Mopria / IPP 2.0 (Port 631)</span>
+        <span class="protocol-chip">✓ HP Common Device Model (REST CDM)</span>
+        <span class="protocol-chip">✓ WSD Print & Scan</span>
+        <span class="protocol-chip">✓ RAW Port 9100</span>
+        <span class="protocol-chip">✓ Wi-Fi Direct</span>
+      </div>
+    </section>
+
+    <!-- Two-Column Grid: Advanced Specs & Diagnostics -->
+    <div class="two-col-grid" id="advancedSpecsGrid">
+
+      <!-- Column 1: Power, Energy & Firmware Cloud Engine -->
+      <section class="card section-card" id="powerFirmwareSection">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon amber-icon">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="card-title">Power, Energy & Firmware Engine</h3>
+              <p class="card-subtitle">Energy Star power profile, sleep triggers, and auto-update cloud agent</p>
+            </div>
+          </div>
+          <span class="badge badge-success" id="energyStarBadge">Energy Star Certified</span>
+        </div>
+
+        <div class="specs-grid">
+          <div class="spec-item">
+            <span class="spec-label">Standby Sleep Timeout</span>
+            <div class="spec-val-wrap">
+              <span class="spec-val" id="powerSleepTo">5 mins</span>
+              <span class="spec-badge">Inactivity</span>
+            </div>
+            <span class="spec-sub">Low-power microcontroller mode</span>
+          </div>
+
+          <div class="spec-item">
+            <span class="spec-label">Auto-Shutdown (Auto-Off)</span>
+            <div class="spec-val-wrap">
+              <span class="spec-val" id="powerShutdownTo">15 mins</span>
+              <span class="spec-badge badge-green" id="powerAutoOffBadge">Enabled</span>
+            </div>
+            <span class="spec-sub">Protects printheads & saves power</span>
+          </div>
+
+          <div class="spec-item">
+            <span class="spec-label">Shutdown Prevention</span>
+            <span class="spec-val mono text-sm" id="powerShutdownPrev">whenPortsAreActive</span>
+            <span class="spec-sub">Keeps alive when jobs arrive on Wi-Fi</span>
+          </div>
+
+          <div class="spec-item">
+            <span class="spec-label">Firmware Auto-Update</span>
+            <div class="spec-val-wrap">
+              <span class="spec-val" id="fwUpdateType">Auto-Update</span>
+              <span class="spec-badge badge-green" id="fwStateBadge">Idle (Up to Date)</span>
+            </div>
+            <span class="spec-sub" id="fwLastCheck">Last check: 2026-10-10 07:54:28 UTC</span>
+          </div>
+        </div>
+
+        <div class="sub-panel-box">
+          <div class="sub-panel-header">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Hardware Diagnostics & Event Codes</span>
+          </div>
+          <div class="diag-pills-row">
+            <div class="diag-pill">
+              <span class="diag-pill-label">Event Codes:</span>
+              <span class="diag-pill-val mono" id="diagEventCodes">74899, 69552</span>
+            </div>
+            <div class="diag-pill">
+              <span class="diag-pill-label">Paper Jams:</span>
+              <span class="diag-pill-val" id="diagPaperJams">0 (Clean Feed)</span>
+            </div>
+            <div class="diag-pill">
+              <span class="diag-pill-label">Carriage Status:</span>
+              <span class="diag-pill-val badge-green" id="diagCarriage">Operational</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Column 2: Print Engine & Media Format Specs -->
+      <section class="card section-card" id="printEngineSection">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon blue-icon">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"/>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <rect x="6" y="14" width="12" height="8"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="card-title">Print Engine & Media Capabilities</h3>
+              <p class="card-subtitle">ISO speeds, duplexing, raster drivers, and 25 supported media sizes</p>
+            </div>
+          </div>
+          <span class="badge badge-neutral" id="mediaCountBadge">25 Media Formats</span>
+        </div>
+
+        <div class="specs-grid">
+          <div class="spec-item">
+            <span class="spec-label">ISO Print Speeds</span>
+            <div class="spec-val-wrap">
+              <span class="spec-val" id="engineSpeeds">12 PPM Mono / 5 PPM Color</span>
+            </div>
+            <span class="spec-sub">ISO/IEC 24734 rated speed</span>
+          </div>
+
+          <div class="spec-item">
+            <span class="spec-label">Duplex Mode</span>
+            <div class="spec-val-wrap">
+              <span class="spec-val" id="engineDuplex">Manual Duplex</span>
+              <span class="spec-badge">Driver Assisted</span>
+            </div>
+            <span class="spec-sub">Step-by-step re-feed guidance</span>
+          </div>
+
+          <div class="spec-item">
+            <span class="spec-label">Copy Machine Defaults</span>
+            <div class="spec-val-wrap">
+              <span class="spec-val" id="copyDefaults">1 Copy • Normal (600 DPI)</span>
+            </div>
+            <span class="spec-sub" id="copySub">Mixed Text/Photo • Simplex Flatbed</span>
+          </div>
+
+          <div class="spec-item">
+            <span class="spec-label">Print Color Modes</span>
+            <div class="spec-val-wrap">
+              <span class="spec-val" id="engineColorModes">Color & Mono</span>
+              <span class="spec-badge">Auto-Detect</span>
+            </div>
+            <span class="spec-sub">Apple AirPrint & PCLm rasterized</span>
+          </div>
+        </div>
+
+        <!-- Supported Media Size Pills -->
+        <div class="sub-panel-box">
+          <div class="sub-panel-header">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18M9 21V9"/>
+            </svg>
+            <span>Recognized Paper Sizes (Selection of 25)</span>
+          </div>
+          <div class="media-pills-row" id="mediaPillsContainer">
+            <span class="size-pill active-size">A4 (210×297mm)</span>
+            <span class="size-pill">Letter (8.5×11")</span>
+            <span class="size-pill">Legal (8.5×14")</span>
+            <span class="size-pill">Photo 4×6"</span>
+            <span class="size-pill">Photo 5×7"</span>
+            <span class="size-pill">Env DL</span>
+            <span class="size-pill">Env C6</span>
+            <span class="size-pill">Env #10</span>
+            <span class="size-pill">A5</span>
+            <span class="size-pill">A6</span>
+            <span class="size-pill">B5</span>
+            <span class="size-pill">Executive</span>
+            <span class="size-pill">Custom (8.5×14")</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Section: Diagnostic Reports & Maintenance Deck -->
+    <section class="card section-card" id="maintenanceSection">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon purple-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="card-title">Printer Diagnostics & Reports</h3>
+            <p class="card-subtitle">Print hardware diagnostic pages directly to verify nozzles, alignment, and connectivity</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="reports-grid" id="reportsGrid">
+        <!-- Report 1: Status Report -->
+        <div class="report-card">
+          <div class="report-badge">System</div>
+          <h4 class="report-title">Printer Status Report</h4>
+          <p class="report-desc">Prints printer model info, serial number, firmware release, page count stats, and general settings.</p>
+          <button class="btn btn-secondary btn-sm print-report-trigger" data-report-id="configurationReport" data-report-name="Printer Status Report">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Print Status Report
+          </button>
+        </div>
+
+        <!-- Report 2: PQ Diagnostics -->
+        <div class="report-card">
+          <div class="report-badge quality-badge">Print Quality</div>
+          <h4 class="report-title">PQ Diagnostics Report</h4>
+          <p class="report-desc">Generates test color patterns and nozzle test grids for Cyan, Magenta, Yellow, and Pigment Black to inspect banding or clogged nozzles.</p>
+          <button class="btn btn-secondary btn-sm print-report-trigger" data-report-id="printQualityTestReport" data-report-name="PQ Diagnostics Report">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Print PQ Diagnostic
+          </button>
+        </div>
+
+        <!-- Report 3: Network Config -->
+        <div class="report-card">
+          <div class="report-badge net-badge">Network</div>
+          <h4 class="report-title">Network Configuration Page</h4>
+          <p class="report-desc">Prints Wi-Fi network status, IP configuration (IPv4 & IPv6), gateway, DNS, signal strength dBm, and 802.11 security details.</p>
+          <button class="btn btn-secondary btn-sm print-report-trigger" data-report-id="networkConfigurationReport" data-report-name="Network Config Report">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Print Network Report
+          </button>
+        </div>
+
+        <!-- Report 4: Alignment Page -->
+        <div class="report-card">
+          <div class="report-badge cal-badge">Calibration</div>
+          <h4 class="report-title">Printhead Alignment Page</h4>
+          <p class="report-desc">Prints calibration test targets for scanning on the flatbed scanner to auto-align the black and tri-color printheads.</p>
+          <button class="btn btn-secondary btn-sm print-report-trigger" data-report-id="alignmentPage" data-report-name="Alignment Page">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Print Alignment Page
+          </button>
+        </div>
+
+        <!-- Report 5: Wireless Test -->
+        <div class="report-card">
+          <div class="report-badge net-badge">Wireless</div>
+          <h4 class="report-title">Wireless Test Report</h4>
+          <p class="report-desc">Runs automated diagnostics on wireless radio, network SSID beacon detection, channel interference, and connectivity tests.</p>
+          <button class="btn btn-secondary btn-sm print-report-trigger" data-report-id="wirelessNetworkPage" data-report-name="Wireless Test Page">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Print Wireless Report
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <span>HP Smart Tank 589 Telemetry Companion</span>
+        <span class="sep">•</span>
+        <span>Local IP: <span class="mono" id="footerIp">192.168.29.86</span></span>
+      </div>
+      <div class="footer-right">
+        <span>Connected to HP Common Device Model (CDM) REST API</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal: Settings & Discovery -->
+  <div class="modal-overlay hidden" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Printer Connection Settings</h3>
+        <button class="modal-close-btn" id="closeSettingsModal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="printerIpInput">Printer IPv4 or Hostname</label>
+          <div class="input-with-button">
+            <input type="text" id="printerIpInput" class="form-input mono" placeholder="192.168.29.86" value="192.168.29.86">
+            <button class="btn btn-secondary btn-sm" id="testConnBtn">Test Ping</button>
+          </div>
+          <span class="input-hint">Default detected IP: 192.168.29.86 or IPv6 [2405:201:d03f:6065:76da:78ff:febc:be8e]</span>
+        </div>
+
+        <div class="form-group">
+          <label for="backendUrlInput">Local Bridge Server URL (Optional)</label>
+          <input type="text" id="backendUrlInput" class="form-input mono" placeholder="http://localhost:8089 (leave blank for Auto / Demo Mode)">
+          <span class="input-hint">For GitHub Pages: specify local monitor bridge URL to stream real-time data from your PC</span>
+        </div>
+
+        <div class="form-group toggle-group">
+          <div class="toggle-text">
+            <span class="toggle-title">Simulation / Demo Mode</span>
+            <span class="toggle-sub">Preview HP Smart Tank 589 stats when printer is offline</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="demoModeToggle">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="discovered-candidates-box">
+          <div class="disc-title">
+            <span>Detected Printers & Network Ports</span>
+            <button class="btn btn-sm btn-outline" id="scanPrintersBtn">Re-Scan</button>
+          </div>
+          <div class="candidates-list" id="candidatesList">
+            <div class="candidate-row selected-cand">
+              <span class="cand-name">HP Smart Tank 580-590 series (Network IP)</span>
+              <span class="cand-ip mono">192.168.29.86</span>
+            </div>
+            <div class="candidate-row">
+              <span class="cand-name">Windows Spooler Queue [HPBCBE8E]</span>
+              <span class="cand-ip mono">WSD Port</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelSettingsBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirmation for Printing Diagnostics -->
+  <div class="modal-overlay hidden" id="confirmPrintModal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Diagnostic Print</h3>
+        <button class="modal-close-btn" id="closeConfirmModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text">You are about to send a print command to your HP Smart Tank 589:</p>
+        <div class="confirm-report-name" id="confirmReportName">Printer Status Report</div>
+        <p class="confirm-sub">This will feed 1 sheet of plain paper from the main tray.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelPrintBtn">Cancel</button>
+        <button class="btn btn-primary" id="executePrintBtn">Print Report Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>

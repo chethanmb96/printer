@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="hpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C4FF"/>
+      <stop offset="100%" stop-color="#0066FF"/>
+    </linearGradient>
+    <linearGradient id="tankC" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="tankM" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#db2777"/>
+    </linearGradient>
+    <linearGradient id="tankY" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </linearGradient>
+  </defs>
+  <!-- Printer Base -->
+  <rect x="6" y="16" width="36" height="22" rx="4" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+  <!-- Paper Feed -->
+  <rect x="14" y="6" width="20" height="12" rx="2" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="18" y1="10" x2="30" y2="10" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="18" y1="13" x2="26" y2="13" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Paper Output Slot -->
+  <rect x="12" y="24" width="24" height="4" rx="2" fill="#0f172a"/>
+  <!-- Ink Tank Indicators on front -->
+  <rect x="10" y="31" width="4" height="4" rx="1" fill="#0f172a" stroke="#64748b" stroke-width="0.8"/>
+  <rect x="16" y="31" width="4" height="4" rx="1" fill="url(#tankC)"/>
+  <rect x="22" y="31" width="4" height="4" rx="1" fill="url(#tankM)"/>
+  <rect x="28" y="31" width="4" height="4" rx="1" fill="url(#tankY)"/>
+  <!-- Power LED -->
+  <circle cx="38" cy="20" r="1.5" fill="#10b981"/>
+</svg>
