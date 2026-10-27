@@ -1,14 +1,14 @@
 # HP Smart Tank 589 Status & Telemetry Monitor
 
-[![Deploy to GitHub Pages](https://github.com/chethanmb96/hp-smarttank-monitor/actions/workflows/deploy.yml/badge.svg)](https://github.com/chethanmb96/hp-smarttank-monitor/actions/workflows/deploy.yml)
-[![Live Demo](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-00AEEF?style=flat&logo=github)](https://chethanmb96.github.io/hp-smarttank-monitor/)
+[![Deploy to GitHub Pages](https://github.com/chethanmb96/printer/actions/workflows/deploy.yml/badge.svg)](https://github.com/chethanmb96/printer/actions/workflows/deploy.yml)
+[![Live Demo](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-00AEEF?style=flat&logo=github)](https://chethanmb96.github.io/printer/)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library-10B981?style=flat)](https://www.python.org/)
 
 A dedicated, lightweight web dashboard and telemetry companion for the **HP Smart Tank 589 (All-in-One)** printer.
 
 It connects directly over your local Wi-Fi to the printer using HP's **Common Device Model (CDM) REST API** and **IPP 2.0 (Internet Printing Protocol)** to retrieve accurate ink levels, hardware health, page impressions, and paper tray status in real-time.
 
-🌐 **Live Demo on GitHub Pages**: [https://chethanmb96.github.io/hp-smarttank-monitor/](https://chethanmb96.github.io/hp-smarttank-monitor/)
+🌐 **Live Demo on GitHub Pages**: [https://chethanmb96.github.io/printer/](https://chethanmb96.github.io/printer/)
 
 ---
 
@@ -63,7 +63,7 @@ This repository is ready for automatic deployment to GitHub Pages!
 2. In your GitHub repository, navigate to **Settings** > **Pages**.
 3. Under **Build and deployment** > **Source**, select **GitHub Actions**.
 4. The workflow in `.github/workflows/deploy.yml` will automatically build and publish your dashboard to:
-   `https://<your-username>.github.io/hp-smarttank-monitor/`
+   `https://<your-username>.github.io/printer/`
 
 ### Alternative: Deploy from Branch
 - Under **Settings** > **Pages** > **Source**, select **Deploy from a branch**.
